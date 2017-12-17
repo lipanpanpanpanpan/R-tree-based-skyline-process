@@ -1,5 +1,4 @@
 '''
-datasetBuilder.py
 Arguements: -s <size>, -r <rangeLimit>, -o <outputName>
 Build a data set
 format:
@@ -14,9 +13,8 @@ import getopt
 import random
 
 
-def random_index(rate):
-    '''随机变量的概率函数'''
-    # 参数rate为list<int>
+#随机变量的概率函数
+def random_index(rate):  # 参数rate为list<int>
     start = 0
     randnum = random.randint(1, sum(rate))
     for index, item in enumerate(rate):
@@ -26,21 +24,21 @@ def random_index(rate):
     return index
 
 
-def random_bitmap(rate): # 生成随机bitmap = [0,1,0,1,1,0,0,0,0,1,0,1,....]
+# 生成随机bitmap = 10101011100000001000
+def random_bitmap(rate):
     '''rate可作为敏感性分析'''
-    
     bitmap = ''
     for i in range(30):
         bitmap += str(random_index(rate))
-    bitmap = int(bitmap,2) # 用10进制保存 "0101011100000001000"，方便按位取或
+    bitmap = int(bitmap, 2)  # 用10进制保存 "10101011100000001000"，方便按位取或
     return bitmap
 
             
-# write coordinates of a rtreePoint
+# write a rtreePoint
 def writePoint(f, rangeLimit):
     x = round(random.uniform(0, rangeLimit),2)
     y = round(random.uniform(0, rangeLimit),2)
-    rate = [80, 20]  # 每个子节点含有聚类中20%的keyword
+    rate = [70, 30]  # 每个子节点含有聚类中30%的keyword
     bitmap = random_bitmap(rate)
     attr1 = round(random.uniform(0, 1), 3)
     attr2 = round(random.uniform(0, 1), 3)
@@ -54,13 +52,12 @@ def buildDataSet(fileName, size, rangeLimit):
     for i in range(1, size+1):
         f.write(str(i) + ' ')
         writePoint(f, rangeLimit)
-
     f.close()
-    print('Size: ', size, '. Range: ', 0, ':', rangeLimit)
+    print('Size:', size, ', Coordinate Range:', 0, '~', rangeLimit)
 
 def main():
     fileName = 'dataset.txt'
-    size = 1000000
+    size = 100000
     rangeLimit = 1000
     
     # parse arguements

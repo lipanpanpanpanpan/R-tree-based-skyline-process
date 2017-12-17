@@ -1,5 +1,4 @@
 '''
-rtreeBuilder.py
 Arguements: -d <datasetFile>, -b <Bvalue>
 Build a r-tree from a given data set
 '''
@@ -9,12 +8,12 @@ import sys
 import time
 # private libraries
 import Rtree
-import scanRange
 
 global root
 global Bvalue
 
-'''从一个二维列表中获得skyline points'''
+
+#从一个二维列表中获得skyline points
 def skyline(list_attr):
     try:
         list_attr = sorted(list_attr, key=lambda x: x[0], reverse=False)
@@ -68,6 +67,25 @@ def insert(node, point):
     else:
         pass
 
+
+def getPoint(nextLine):
+    # split the string with whitespace
+    content1 = nextLine.strip('\n')
+    content = content1.split(' ')
+    while content.count('') != 0:
+        content.remove('')
+    # point id
+    ident = int(content[0])
+    #point id and coordinates
+    x = float(content[1])
+    y = float(content[2])
+    bitmap = int(content[3])
+    attr = [float(content[4]), float(content[5])]
+    #print([ident, x, y, bitmap, attr])
+    return [ident, x, y, bitmap, attr]
+
+
+
 def buildRtree(dataSetName, *B):
     global root
     global Bvalue
@@ -81,7 +99,7 @@ def buildRtree(dataSetName, *B):
     size = int(nextLine.strip('\n'))
     # read the first point and build a root
     nextLine = f.readline()
-    point = Rtree.Point(scanRange.getPoint(nextLine))
+    point = Rtree.Point(getPoint(nextLine))
     root = Rtree.Leaf(Bvalue, 1, point)
     root.addChild(point)
     # add the remained points
@@ -89,14 +107,14 @@ def buildRtree(dataSetName, *B):
     while nextLine == '\n':
         nextLine = f.readline()
     while nextLine != '':
-        point = Rtree.Point(scanRange.getPoint(nextLine))
+        point = Rtree.Point(getPoint(nextLine))
         insert(root, point)
         nextLine = f.readline()
         while nextLine == '\n':
             nextLine = f.readline()
     f.close()
     maintain(root)
-    print('R-tree has been built. B is:', Bvalue,'Highest level is:',root.level)
+    print('R-tree has been built. B is:', Bvalue,'. Highest level is:',root.level)
     '''print('第1层： ',root.attribute,'     ',root.bitmap)
     for child in root.childList:
         print('第2层： ',child.attribute,'    ',child.bitmap)
@@ -109,13 +127,14 @@ def buildRtree(dataSetName, *B):
                 
     return root
 
+# maintain the bitmap and list of attribute
 def maintain(root):
     if isinstance(root, Rtree.Node):
         for child in root.childList:
             maintain(child)
         calculate(root)
 
-
+# calculate the Node's bitmap&attribute
 def calculate(root):
     if isinstance(root, Rtree.Node):
         for child in root.childList:
