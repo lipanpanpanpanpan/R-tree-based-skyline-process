@@ -106,18 +106,8 @@ def NodeScore(node, query):
     return score
 
 
-'''模拟一波计算向量距离，那个词向量太烦了，找不到合适的数据集提取关键词，用随机生成的bitmap来模拟关键词匹配
-用这个函数来模拟计算词向量距离的时间复杂度'''
 def word2vec():
-    dissum = 0
-    for i in range(200):
-        a = round(random.uniform(-2, 2), 6)
-        b = round(random.uniform(-2, 2), 6)
-        dissum += (a-b)**2
-    dis = math.sqrt(dissum)
-    return
-
-
+    pass
 
 # answer all the queries using "Best First" algorithm with a given r-tree
 def answerNnQueries(root, queries, k):
